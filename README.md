@@ -102,14 +102,10 @@ This website template is ready to use for your business.
 ### GST Services
 - GST Registration
 - GST Returns Filing (GSTR-1, GSTR-3B)
-- GST Compliance
-- GST Audit Support
 
 ### ITR Filing
 - Individual ITR Filing
 - Business ITR Filing
-- Tax Planning
-- Assessment Representation
 
 ### TDS Management
 - TDS Deduction Calculation
