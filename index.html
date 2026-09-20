@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bhanu Classic Kitchen — Profit Calculator</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f6f8;color:#17191d;font:14px Arial,sans-serif}.wrap{max-width:1180px;margin:auto;padding:28px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.brand{font-size:23px;font-weight:800}.brand small{display:block;color:#8a9098;font-size:11px;margin-top:4px}.date{color:#727982;font-size:12px}.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}.card{background:#fff;border:1px solid #e1e4e8;border-radius:14px;padding:20px}.card h2{font-size:16px;margin:0 0 16px}.sub{color:#858b94;font-size:11px;margin:-10px 0 16px}.inputs{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field label{display:block;color:#68707a;font-size:11px;margin-bottom:6px}.field input{width:100%;border:1px solid #dfe2e6;border-radius:8px;padding:11px;font-size:14px;outline:0}.field input:focus{border-color:#8aa68f}.calc{margin-top:14px;width:100%;border:0;background:#151719;color:#fff;padding:12px;border-radius:9px;font-weight:700;cursor:pointer}.rows{display:grid;gap:12px}.row{display:flex;justify-content:space-between;border-bottom:1px solid #eef0f2;padding-bottom:10px}.row span{color:#717780}.total{border:0;padding-top:5px;font-size:16px}.profit{background:#121416;color:#fff;margin-top:14px;padding:18px;border-radius:12px}.profit small{color:#9ba1a8}.profit strong{display:block;font-size:31px;margin-top:4px}.good{color:#56bc7e}.negative{color:#e37567}.formula{font-size:12px;line-height:1.8;color:#707781}.formula b{color:#21252a}.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{background:#f0f2f4;padding:7px 9px;border-radius:20px;font-size:11px;color:#616872}@media(max-width:800px){.grid{grid-template-columns:1fr}}@media(max-width:520px){.wrap{padding:16px}.inputs{grid-template-columns:1fr}.top{display:block}.date{margin-top:7px}}
+</style></head>
+<body><div class="wrap">
+<div class="top"><div class="brand">Bhanu Classic Kitchen<small>Live kitchen profit calculator</small></div><div class="date">Enter your actual figures</div></div>
+<div class="grid">
+<section class="card"><h2>Sales & platform deductions</h2><div class="sub">Use numbers from your Zomato / Swiggy statements.</div>
+<div class="inputs">
+<div class="field"><label>Zomato sales (₹)</label><input id="zs" type="number" min="0" value="0"></div>
+<div class="field"><label>Swiggy sales (₹)</label><input id="ss" type="number" min="0" value="0"></div>
+<div class="field"><label>Zomato fees / deductions (₹)</label><input id="zf" type="number" min="0" value="0"></div>
+<div class="field"><label>Swiggy fees / deductions (₹)</label><input id="sf" type="number" min="0" value="0"></div>
+<div class="field"><label>Restaurant discounts (₹)</label><input id="disc" type="number" min="0" value="0"></div>
+<div class="field"><label>Refunds / cancellations (₹)</label><input id="refund" type="number" min="0" value="0"></div>
+</div></section>
+<section class="card"><h2>Kitchen costs</h2><div class="sub">Enter costs for the same period.</div>
+<div class="inputs">
+<div class="field"><label>Food / raw materials (₹)</label><input id="food" type="number" min="0" value="0"></div>
+<div class="field"><label>Packaging (₹)</label><input id="pack" type="number" min="0" value="0"></div>
+<div class="field"><label>Gas / variable costs (₹)</label><input id="gas" type="number" min="0" value="0"></div>
+<div class="field"><label>Salaries (₹)</label><input id="salary" type="number" min="0" value="0"></div>
+<div class="field"><label>Rent (₹)</label><input id="rent" type="number" min="0" value="0"></div>
+<div class="field"><label>Electricity / utilities (₹)</label><input id="elec" type="number" min="0" value="0"></div>
+</div><button class="calc" onclick="calc()">Calculate profit</button></section>
+<section class="card"><h2>Profit calculation</h2>
+<div class="rows"><div class="row"><span>Gross sales</span><b id="gross">₹0</b></div><div class="row"><span>Platform deductions</span><b id="fees">-₹0</b></div><div class="row"><span>Discounts + refunds</span><b id="leak">-₹0</b></div><div class="row"><span>Net platform revenue</span><b id="net">₹0</b></div><div class="row"><span>Food + packaging + variable</span><b id="var">-₹0</b></div><div class="row"><span>Fixed operating costs</span><b id="fixed">-₹0</b></div><div class="row total"><span><b>Net profit</b></span><b id="profit">₹0</b></div></div>
+<div class="profit"><small>Profit margin</small><strong id="margin">0.0%</strong><div id="status" class="good">Ready</div></div></section>
+<section class="card"><h2>Quick metrics</h2><div class="chips"><div class="chip">Platform fee %: <b id="feePct">0.0%</b></div><div class="chip">Food cost %: <b id="foodPct">0.0%</b></div><div class="chip">Operating cost %: <b id="opPct">0.0%</b></div></div><p class="formula"><b>Net revenue</b> = Gross sales − platform deductions − discounts/refunds<br><b>Net profit</b> = Net revenue − variable kitchen costs − fixed operating costs<br><b>Margin</b> = Net profit ÷ Gross sales × 100</p></section>
+</div></div>
+<script>
+const ids=["zs","ss","zf","sf","disc","refund","food","pack","gas","salary","rent","elec"];
+const n=id=>Number(document.getElementById(id).value)||0;const money=v=>"₹"+Math.round(v).toLocaleString("en-IN");
+function calc(){const gross=n("zs")+n("ss"),fees=n("zf")+n("sf"),leak=n("disc")+n("refund"),net=gross-fees-leak,varc=n("food")+n("pack")+n("gas"),fixed=n("salary")+n("rent")+n("elec"),profit=net-varc-fixed;
+document.getElementById("gross").textContent=money(gross);document.getElementById("fees").textContent="-"+money(fees);document.getElementById("leak").textContent="-"+money(leak);document.getElementById("net").textContent=money(net);document.getElementById("var").textContent="-"+money(varc);document.getElementById("fixed").textContent="-"+money(fixed);document.getElementById("profit").textContent=money(profit);document.getElementById("margin").textContent=(gross?profit/gross*100:0).toFixed(1)+"%";document.getElementById("status").textContent=profit>0?"Operating profit":profit<0?"Operating loss":"Break-even";document.getElementById("status").className=profit>0?"good":"negative";document.getElementById("feePct").textContent=(gross?fees/gross*100:0).toFixed(1)+"%";document.getElementById("foodPct").textContent=(gross?n("food")/gross*100:0).toFixed(1)+"%";document.getElementById("opPct").textContent=(gross?(varc+fixed)/gross*100:0).toFixed(1)+"%";}
+ids.forEach(id=>document.getElementById(id).addEventListener("input",calc));calc();
+</script></body></html>
